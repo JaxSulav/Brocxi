@@ -2,6 +2,7 @@ env/
 .env
 cache/
 nomic_cache/
+mxbai_cache/
 .ipynb_checkpoints
 G_Scraper/
 data/

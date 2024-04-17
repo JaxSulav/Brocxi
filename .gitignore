@@ -1,0 +1,8 @@
+env/
+.env
+cache/
+nomic_cache/
+.ipynb_checkpoints
+G_Scraper/
+data/
+.DS_Store

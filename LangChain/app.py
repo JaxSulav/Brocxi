@@ -9,12 +9,14 @@ from langchain.retrievers.contextual_compression import \
 from langchain_cohere import CohereRerank
 from langchain_community.llms import Ollama
 from langchain_community.vectorstores import FAISS
+from langchain.retrievers.document_compressors import FlashrankRerank
 
-COHERE_API_KEY = os.getenv('COHERE_API_KEY')
+# COHERE_API_KEY = os.getenv('COHERE_API_KEY')
 
-load_dotenv()
+# load_dotenv()
 
 # embeddings_model = SentenceTransformer("mixedbread-ai/mxbai-embed-large-v1")
+
 
 from langchain.embeddings import HuggingFaceEmbeddings
 from transformers import AutoModel
@@ -30,12 +32,13 @@ embeddings_model = HuggingFaceEmbeddings(
 
 db = FAISS.load_local("mxbai_faiss_index", embeddings_model, allow_dangerous_deserialization=True)
 retriever = db.as_retriever()
-compressor = CohereRerank()
+# compressor = CohereRerank()
+
+compressor = FlashrankRerank()
 compression_retriever = ContextualCompressionRetriever(
     base_compressor=compressor, base_retriever=retriever
 )
 llm = Ollama(model="mistral", temperature=0)
-
 
 
 @cl.on_chat_start

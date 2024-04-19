@@ -1,0 +1,1 @@
+# Hi! I am Brocxi, your virtual assistant for the God of War Ragnarok. I will be your game guide during your adventure through the landscapes of Norse mythology. 

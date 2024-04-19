@@ -7,3 +7,6 @@ mxbai_cache/
 G_Scraper/
 data/
 .DS_Store
+*.pyc
+.chainlit
+mxbai_faiss_index/

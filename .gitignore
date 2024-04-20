@@ -7,6 +7,7 @@ mxbai_full_cache/
 .ipynb_checkpoints
 G_Scraper/
 data/
+data_test/
 .DS_Store
 *.pyc
 .chainlit

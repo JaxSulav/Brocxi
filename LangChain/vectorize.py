@@ -14,7 +14,7 @@ from transformers import AutoModel
 
 load_dotenv()
 COHERE_API_KEY = os.getenv('COHERE_API_KEY')
-cache_store = LocalFileStore("./mxbai_cache/")
+cache_store = LocalFileStore("./mxbai_full_cache/")
 
 loader = DirectoryLoader('../data', glob="*.txt", loader_cls=TextLoader, show_progress=True)
 docs = loader.load()
@@ -25,8 +25,7 @@ text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
 )
 chunked = text_splitter.split_documents(docs)
 
-
-model = AutoModel.from_pretrained('mixedbread-ai/mxbai-embed-large-v1', trust_remote_code=True) 
+# model = AutoModel.from_pretrained('mixedbread-ai/mxbai-embed-large-v1', trust_remote_code=True) 
 
 model_name = "mixedbread-ai/mxbai-embed-large-v1"
 model_kwargs = {'device': 'cpu'}
@@ -42,4 +41,6 @@ cached_embedder = CacheBackedEmbeddings.from_bytes_store(
 
 db = FAISS.from_documents(chunked, cached_embedder)
 
-db.save_local("mxbai_faiss_index")
+db.save_local("mxbai_full_faiss_index")
+
+print("Embeddings saved ...")

@@ -10,6 +10,7 @@ from langchain_cohere import CohereRerank
 from langchain_community.llms import Ollama
 from langchain_community.vectorstores import FAISS
 from langchain.retrievers.document_compressors import FlashrankRerank
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # COHERE_API_KEY = os.getenv('COHERE_API_KEY')
 
@@ -17,11 +18,9 @@ from langchain.retrievers.document_compressors import FlashrankRerank
 
 # embeddings_model = SentenceTransformer("mixedbread-ai/mxbai-embed-large-v1")
 
+# from transformers import AutoModel
 
-from langchain.embeddings import HuggingFaceEmbeddings
-from transformers import AutoModel
-
-model = AutoModel.from_pretrained('mixedbread-ai/mxbai-embed-large-v1', trust_remote_code=True) 
+# model = AutoModel.from_pretrained('mixedbread-ai/mxbai-embed-large-v1', trust_remote_code=True) 
 
 model_name = "mixedbread-ai/mxbai-embed-large-v1"
 model_kwargs = {'device': 'cpu'}
@@ -30,7 +29,7 @@ embeddings_model = HuggingFaceEmbeddings(
     model_kwargs=model_kwargs,
 )
 
-db = FAISS.load_local("mxbai_faiss_index", embeddings_model, allow_dangerous_deserialization=True)
+db = FAISS.load_local("mxbai_full_faiss_index", embeddings_model, allow_dangerous_deserialization=True)
 retriever = db.as_retriever()
 # compressor = CohereRerank()
 
@@ -88,4 +87,4 @@ async def main(message: cl.Message):
         else:
             answer += "\nNo sources found"
 
-    await cl.Message(content=answer, elements=text_elements).send()
+    await cl.Message(content=answer, elements=text_elements, author="Brocxi").send()

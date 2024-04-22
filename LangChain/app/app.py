@@ -9,20 +9,26 @@ from huggingface_hub import login
 from transformers import AutoModel
 from langchain import HuggingFaceHub
 from langchain_community.llms import Ollama
+from langchain_community.llms import LlamaCpp
 from langchain.llms import HuggingFacePipeline
 from langchain_community.vectorstores import FAISS
+from langchain_community.llms import CTransformers
 from langchain.chains import ConversationalRetrievalChain
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.retrievers.document_compressors import FlashrankRerank
 from langchain.memory import ChatMessageHistory, ConversationBufferMemory
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
+
+
 
 # HUGGINGFACEHUB_API_TOKEN = getpass()
 # os.environ["HUGGINGFACEHUB_API_TOKEN"] = HUGGINGFACEHUB_API_TOKEN
-load_dotenv()
+# load_dotenv()
 
 # HUGGINGFACE_TOKEN = os.getenv('HUGGINGFACE_TOKEN')
+# print(HUGGINGFACE_TOKEN)
 # login(token = HUGGINGFACE_TOKEN)
 
 
@@ -43,15 +49,38 @@ compression_retriever = ContextualCompressionRetriever(
     base_compressor=compressor, base_retriever=retriever
 )
 
-
-# model_id = "LoneStriker/opus-v1.2-llama-3-8b-GGUF"
-
-# llm = HuggingFaceHub(huggingfacehub_api_token=HUGGINGFACE_TOKEN, repo_id=model_id, model_kwargs={
-#     "temperature": 0.5, "max_new_tokens": 150
-# })
+# I/0 stream
+callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 
-llm = Ollama(model="llama3", temperature=0)
+#* Round 2
+# llm = HuggingFaceHub(
+#     huggingfacehub_api_token=HUGGINGFACE_TOKEN, 
+#     repo_id=model_id, 
+#     model_kwargs={
+#         "temperature": 0.5
+#         }
+#     )
+
+#* Round 3
+# llm = CTransformers(model=model_id)
+# llm = CTransformers(model='IlyaGusev/saiga_llama3_8b_gguf', model_file='model-q4_K.gguf', model_type="llama")
+
+# llm = CTransformers(model='../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf', model_type='llama')
+
+#* Round 4
+n_gpu_layers = 25 
+n_batch = 256
+llm = LlamaCpp(
+    model_path="../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf",
+    n_gpu_layers=n_gpu_layers,
+    n_batch=n_batch,
+    f16_kv=True,
+    callback_manager=callback_manager,
+    verbose=True,
+)
+
+# llm = Ollama(model="llama3", temperature=0)
 
 @cl.on_chat_start
 async def on_chat_start():

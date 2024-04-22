@@ -1,44 +1,57 @@
+
 import os
+import torch
+import transformers
 import chainlit as cl
+from getpass import getpass
 from dotenv import load_dotenv
-from langchain.chains import ConversationalRetrievalChain
-from langchain.memory import ChatMessageHistory, ConversationBufferMemory
-from langchain.retrievers import ContextualCompressionRetriever
-from langchain.retrievers.contextual_compression import \
-    ContextualCompressionRetriever
-from langchain_cohere import CohereRerank
+from huggingface_hub import login
+from transformers import AutoModel
+from langchain import HuggingFaceHub
 from langchain_community.llms import Ollama
+from langchain.llms import HuggingFacePipeline
 from langchain_community.vectorstores import FAISS
-from langchain.retrievers.document_compressors import FlashrankRerank
+from langchain.chains import ConversationalRetrievalChain
+from langchain.retrievers import ContextualCompressionRetriever
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.retrievers.document_compressors import FlashrankRerank
+from langchain.memory import ChatMessageHistory, ConversationBufferMemory
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
-# COHERE_API_KEY = os.getenv('COHERE_API_KEY')
+# HUGGINGFACEHUB_API_TOKEN = getpass()
+# os.environ["HUGGINGFACEHUB_API_TOKEN"] = HUGGINGFACEHUB_API_TOKEN
+load_dotenv()
 
-# load_dotenv()
+# HUGGINGFACE_TOKEN = os.getenv('HUGGINGFACE_TOKEN')
+# login(token = HUGGINGFACE_TOKEN)
+
 
 # embeddings_model = SentenceTransformer("mixedbread-ai/mxbai-embed-large-v1")
 
 # from transformers import AutoModel
 
-# model = AutoModel.from_pretrained('mixedbread-ai/mxbai-embed-large-v1', trust_remote_code=True) 
-
-model_name = "mixedbread-ai/mxbai-embed-large-v1"
-model_kwargs = {'device': 'cpu'}
 embeddings_model = HuggingFaceEmbeddings(
-    model_name=model_name,
-    model_kwargs=model_kwargs,
+    model_name="mixedbread-ai/mxbai-embed-large-v1",
+    model_kwargs={'device': 'cpu'},
 )
 
-db = FAISS.load_local("mxbai_full_faiss_index", embeddings_model, allow_dangerous_deserialization=True)
+db = FAISS.load_local("mxbai_faiss_index_v2", embeddings_model, allow_dangerous_deserialization=True)
 retriever = db.as_retriever()
-# compressor = CohereRerank()
 
 compressor = FlashrankRerank()
 compression_retriever = ContextualCompressionRetriever(
     base_compressor=compressor, base_retriever=retriever
 )
-llm = Ollama(model="mistral", temperature=0)
 
+
+# model_id = "LoneStriker/opus-v1.2-llama-3-8b-GGUF"
+
+# llm = HuggingFaceHub(huggingfacehub_api_token=HUGGINGFACE_TOKEN, repo_id=model_id, model_kwargs={
+#     "temperature": 0.5, "max_new_tokens": 150
+# })
+
+
+llm = Ollama(model="llama3", temperature=0)
 
 @cl.on_chat_start
 async def on_chat_start():
@@ -62,7 +75,7 @@ async def on_chat_start():
 
     cl.user_session.set("chain", chain)
 
-
+#TODO: Stream response
 @cl.on_message
 async def main(message: cl.Message):
     chain = cl.user_session.get("chain") 

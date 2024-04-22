@@ -3,6 +3,7 @@ env/
 cache/
 nomic_cache/
 mxbai_cache/
+mxbai_cache_v2/
 mxbai_full_cache/
 .ipynb_checkpoints
 G_Scraper/
@@ -11,5 +12,9 @@ data_test/
 .DS_Store
 *.pyc
 .chainlit
+.files
 mxbai_faiss_index/
 mxbai_full_faiss_index/
+mxbai_faiss_index_v2/
+__pycache__/
+.vscode

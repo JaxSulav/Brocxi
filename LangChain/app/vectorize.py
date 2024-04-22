@@ -1,5 +1,4 @@
 from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.document_loaders import DirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.embeddings import CacheBackedEmbeddings
 from langchain.storage import LocalFileStore
@@ -12,11 +11,9 @@ from transformers import AutoModel
 
 
 
-load_dotenv()
-COHERE_API_KEY = os.getenv('COHERE_API_KEY')
-cache_store = LocalFileStore("./mxbai_full_cache/")
+cache_store = LocalFileStore("./mxbai_cache_v2/")
 
-loader = DirectoryLoader('../data', glob="*.txt", loader_cls=TextLoader, show_progress=True)
+loader = DirectoryLoader('../G_Scraper/extracted_files', glob="*.txt", loader_cls=TextLoader, show_progress=True)
 docs = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
@@ -41,6 +38,6 @@ cached_embedder = CacheBackedEmbeddings.from_bytes_store(
 
 db = FAISS.from_documents(chunked, cached_embedder)
 
-db.save_local("mxbai_full_faiss_index")
+db.save_local("mxbai_faiss_index_v2")
 
 print("Embeddings saved ...")

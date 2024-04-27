@@ -16,6 +16,5 @@ data_test/
 .files
 mxbai_faiss_index/
 mxbai_full_faiss_index/
-mxbai_faiss_index_v2/
 __pycache__/
 .vscode

@@ -1,21 +1,23 @@
-from langchain_community.document_loaders import DirectoryLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.embeddings import CacheBackedEmbeddings
+import os
+from dotenv import load_dotenv
+from transformers import AutoModel
 from langchain.storage import LocalFileStore
 from langchain.document_loaders import TextLoader
 from langchain_community.vectorstores import FAISS
-import os
-from dotenv import load_dotenv
+from langchain.embeddings import CacheBackedEmbeddings
 from langchain.embeddings import HuggingFaceEmbeddings
-from transformers import AutoModel
+from langchain_community.document_loaders import DirectoryLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 
 cache_store = LocalFileStore("./mxbai_cache_v2/")
 
-loader = DirectoryLoader('../G_Scraper/extracted_files', glob="*.txt", loader_cls=TextLoader, show_progress=True)
+# Load txt files from dir
+loader = DirectoryLoader('../extracted_files', glob="*.txt", loader_cls=TextLoader, show_progress=True)
 docs = loader.load()
 
+# Chunking
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
     chunk_size=256,
     chunk_overlap=64,

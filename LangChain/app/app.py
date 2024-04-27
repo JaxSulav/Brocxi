@@ -41,10 +41,15 @@ embeddings_model = HuggingFaceEmbeddings(
     model_kwargs={'device': 'cpu'},
 )
 
+# Load FIASS db index as retriever
 db = FAISS.load_local("mxbai_faiss_index_v2", embeddings_model, allow_dangerous_deserialization=True)
 retriever = db.as_retriever()
 
+# Use Flashrank as rerank engine
 compressor = FlashrankRerank()
+
+# Pass reranker as base compressor and retriever as base retriever
+# to ContextualCompressonRetriever.
 compression_retriever = ContextualCompressionRetriever(
     base_compressor=compressor, base_retriever=retriever
 )
@@ -69,18 +74,18 @@ callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 # llm = CTransformers(model='../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf', model_type='llama')
 
 #* Round 4
-n_gpu_layers = 25 
-n_batch = 256
-llm = LlamaCpp(
-    model_path="../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf",
-    n_gpu_layers=n_gpu_layers,
-    n_batch=n_batch,
-    f16_kv=True,
-    callback_manager=callback_manager,
-    verbose=True,
-)
+# n_gpu_layers = 25 
+# n_batch = 256
+# llm = LlamaCpp(
+#     model_path="../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf",
+#     n_gpu_layers=n_gpu_layers,
+#     n_batch=n_batch,
+#     f16_kv=True,
+#     callback_manager=callback_manager,
+#     verbose=True,
+# )
 
-# llm = Ollama(model="llama3", temperature=0)
+llm = Ollama(model="llama3", temperature=0.2)
 
 @cl.on_chat_start
 async def on_chat_start():
@@ -116,9 +121,10 @@ async def main(message: cl.Message):
 
     text_elements = [] 
 
+    #* Returning Sources
     if source_documents:
         for source_idx, source_doc in enumerate(source_documents):
-            source_name = f"source_{source_idx}"
+            source_name = f"source_{source_idx+1}"
             text_elements.append(
                 cl.Text(content=source_doc.page_content, name=source_name)
             )

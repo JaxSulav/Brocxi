@@ -7,8 +7,10 @@ from getpass import getpass
 from dotenv import load_dotenv
 from huggingface_hub import login
 from transformers import AutoModel
+from langchain.llms import BaseLLM
 from langchain import HuggingFaceHub
 from langchain_community.llms import Ollama
+from langchain_community.llms import Cohere
 from langchain_community.llms import LlamaCpp
 from langchain.llms import HuggingFacePipeline
 from langchain_community.vectorstores import FAISS
@@ -21,6 +23,8 @@ from langchain.memory import ChatMessageHistory, ConversationBufferMemory
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
 
+load_dotenv()
+COHERE_API_KEY = os.getenv('COHERE_API_KEY')
 
 
 # HUGGINGFACEHUB_API_TOKEN = getpass()
@@ -73,11 +77,12 @@ callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 # llm = CTransformers(model='../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf', model_type='llama')
 
-#* Round 4
-# n_gpu_layers = 25 
-# n_batch = 256
+#* Round 4  
+# n_gpu_layers = 15
+# n_batch = 128
 # llm = LlamaCpp(
 #     model_path="../../data_test/Meta-Llama-3-8B.Q4_K_M.gguf",
+#     # n_ctx = 1024,
 #     n_gpu_layers=n_gpu_layers,
 #     n_batch=n_batch,
 #     f16_kv=True,
@@ -86,6 +91,7 @@ callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 # )
 
 llm = Ollama(model="llama3", temperature=0.2)
+# llm = Cohere(temperature=0.2)
 
 @cl.on_chat_start
 async def on_chat_start():

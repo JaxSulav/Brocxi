@@ -24,7 +24,7 @@ If you want to use LlamaCpp, Langchain's LlamaCpp is used.
 
 If you want to use APIs to perform embeddings or run HuggingFace models. You need to set your key in the .env file inside the app dir.
 
-> Reference LangChain/inject.py if you want to vectorize and inject embeddings into vector db. Here, the saved cache is alreeady uploaded so you do not need to do that.
+> Reference LangChain/inject.py if you want to vectorize and inject embeddings into vector db. Here, the saved cache is already uploaded so you do not need to do that.
 
 > Launch ChainLit App:<br>
 `$ cd LangChain/app`<br>

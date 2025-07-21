@@ -31,8 +31,8 @@ If you want to use APIs to perform embeddings or run HuggingFace models. You nee
 `$ chainlit run app.py`
 
 ## TODOs:
-- [] Evaluation using RAGAS.
-- [] Get more quality data for embeddings. Seems like, just the IGN guide was not enough because players will ask about lores and other stories. As for the side mission with giant jellyfish, the IGN guide does not mention the word “jellyfish” because its name is Hafgufa.
-- [] Need to include fandom wikis, gamefaqs, and other guides as well. Experiment with different retrieval techniques and use a larger version of Flashrank rerank.
-- [] Another Retrieval method: ParentDocument, Long-Context Reorder??
+- [ ] Evaluation using RAGAS.
+- [ ] Get more quality data for embeddings. Seems like, just the IGN guide was not enough because players will ask about lores and other stories. As for the side mission with giant jellyfish, the IGN guide does not mention the word “jellyfish” because its name is Hafgufa.
+- [ ] Need to include fandom wikis, gamefaqs, and other guides as well. Experiment with different retrieval techniques and use a larger version of Flashrank rerank.
+- [ ] Another Retrieval method: ParentDocument, Long-Context Reorder??
 
